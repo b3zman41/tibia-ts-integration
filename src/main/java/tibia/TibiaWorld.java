@@ -12,12 +12,15 @@ import java.util.ArrayList;
 
 public class TibiaWorld {
 
+    public String worldName;
+
     private String html;
     private Document document;
 
     public ArrayList<String> players = new ArrayList<>();
 
     public TibiaWorld(String world) throws UnirestException, IOException {
+        this.worldName = world;
         this.document = Jsoup.connect("http://www.tibia.com/community/?subtopic=worlds&world=" + world).get();
 
         this.parse();
@@ -38,7 +41,5 @@ public class TibiaWorld {
             this.players.add(element.child(0).text().replace("\u00a0", " "));
         });
     }
-
-
 
 }

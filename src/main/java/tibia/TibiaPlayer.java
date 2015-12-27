@@ -4,10 +4,12 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import jsoup.JsoupUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class TibiaPlayer {
@@ -18,6 +20,8 @@ public class TibiaPlayer {
     private String name, sex, vocation, world, residence;
 
     private Integer level, achievementPoints;
+
+    private ArrayList<Death> deaths = new ArrayList<>();
 
     private Date lastLogin;
 
@@ -78,22 +82,28 @@ public class TibiaPlayer {
     }
 
     public void parseDeaths() {
-        Elements elements = this.document.select("b:contains(Character Deaths)").first().parent().parent().parent().children();
+        Element element = this.document.select("b:contains(Character Deaths)").first();
 
-        elements.remove(elements.first());
+        if (element != null) {
+            Elements elements = element.parent().parent().parent().children();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy, HH:mm:ss z");
+            elements.remove(elements.first());
 
-        elements.forEach(td -> {
-            Death death = new Death();
+            SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy, HH:mm:ss z");
 
-            try {
-                death.time = formatter.parse(td.children().first().text().replace("\u00a0", " "));
-                death.description = td.child(1).text();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        });
+            elements.forEach(td -> {
+                Death death = new Death();
+
+                try {
+                    death.time = formatter.parse(td.children().first().text().replace("\u00a0", " "));
+                    death.description = td.child(1).text();
+
+                    this.deaths.add(death);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
 
@@ -127,5 +137,25 @@ public class TibiaPlayer {
 
     public Date getLastLogin() {
         return lastLogin;
+    }
+
+    public ArrayList<Death> getDeaths() {
+        return this.deaths;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TibiaPlayer that = (TibiaPlayer) o;
+
+        return name.equals(that.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }

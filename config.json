@@ -1,0 +1,22 @@
+{
+  "host" : "localhost",
+  "username": "serveradmin",
+  "password": "Rvjz8pUB",
+
+  "pollingTime": 10000,
+
+  "status": [
+    "Alitilis",
+    "Darkmetra",
+    "Forgiven Rangaa"
+  ],
+
+  "death": [
+    "Fxa",
+    "Grath Geluduxo",
+    "Purp Amp",
+    "Aetios Dran",
+    "Gulag Bezman"
+  ]
+
+}
